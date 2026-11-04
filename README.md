@@ -128,5 +128,12 @@ What I find compelling about local inference is operational control. Choosing my
 
 I don't (and doubt that I can) necessarily eliminate every external dependency; I just want to better understand, control, and trust the tools I'm utilizing. Local models are impervious to malfeasance - but they offer a degree of autonomy over the infrastructure and data involved in using AI that hosted services inherently abstract away.
 
-### Postscript - Strata ###
-Testing and benchmarking of models actually began in Strata, not LM Studio. I wanted to see what all the fuss about larger MoE models on VRAM and CPU could do on my modest consumer-grade hardware. The results were remarkable, with Qwen3.6-35B-A3B Q6_K_XL running at a blistering 50 t/s. This came with caveats, most notably that the models really didn't interface well with Continue agentically, resulting in lots of churn and lost context (though one-shot capabilities were notable). Strata also has some privacy considerations, as it downloads new weights and models at runtime without user prompting. This in the wake of the recent AI supply chain attacks was simply too large a concern to ignore. I ended up moving to LM Studio for consistency, though I hope Strata addresses these concerns and that LM Studio implements that style of MoE hardware resource allocation tricks soon.
+### Postscript - Strata
+
+My initial testing and benchmarking actually began in Strata, rather than LM Studio. I wanted to explore the viability of larger MoE models across VRAM and system memory on relatively modest consumer hardware. The results were remarkable: Qwen3.6-35B-A3B Q6_K_XL managed approximately 50 t/s on my setup.
+
+There were, however, some caveats. While one-shot performance was impressive, integration with Continue's agentic workflow proved considerably less reliable, resulting in substantial churn and lost context. More importantly, I had some reservations about Strata's approach to model acquisition. Its runtime downloading of model weights without explicit user intervention introduced a supply-chain concern that I wasn't comfortable overlooking, especially given the recent history of attacks targeting the AI software ecosystem in the last few weeks (~October 2026).
+
+The intent obviously isn't malicious, but it does run afoul of my control concerns. As privacy is among my chief motivations for exploring local inference, it was counterproductive to introduce another opaque trust relationship into the workflow.
+
+I ultimately moved to LM Studio for a more predictable and controlled environment. I still think Strata's approach to MoE resource allocation is compelling, and I'd love to see more transparent model acquisition and verification in future releases. I'd also love to see similar hardware allocation capabilities make their way into LM Studio.
