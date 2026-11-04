@@ -100,29 +100,27 @@ Technical takeaways:
 
 Privacy is one of the primary motivations behind my interest in local inference, although I think the argument deserves a little more nuance than simply keeping prompts off someone else's servers. Local inference is an important component of data privacy, but it isn't a sufficient security guarantee; the model is only one part of a larger execution environment, and evaluating an AI workflow requires looking beyond where inference happens.
 
-There are three areas worth considering.
-
-### Inference locality
+#### Inference locality
 
 With hosted models, prompts, source code, retrieved context, and tool outputs are transmitted to infrastructure operated by an external provider. We will suffice to say that my trust in those providers is somewhat *limited*. Local inference changes that trust boundary. Computation happens on hardware I control, preventing sensitive context from leaving my environment. This is particularly relevant for coding agents, for obvious reasons. Of course, this assumes the inference path is genuinely local. Cloud fallbacks, telemetry, and auxiliary services can easily undermine that assumption (see Postscript - Strata).
 
-### Model provenance
+#### Model provenance
 
 Runtime model acquisition introduces another layer of trust. Where are the weights coming from? Can their integrity be verified? Am I running the exact artifact I intended to download? I'd rather know *exactly* what I'm running and where it came from than treat model acquisition as an inconsequential implementation detail.
 
-### Agent architecture
+#### Agent architecture
 
 This is arguably the most overlooked consideration.
 
 A coding agent isn't simply an LLM with a chat interface. It's another layer that can mediate access to the filesystem, shell, browser, environment variables, external APIs, and other tools. A locally hosted model can still operate within an agent framework that transmits telemetry, delegates embeddings to remote services, or communicates with external providers. Local inference does not guarantee a local workflow. Privacy and security need to be evaluated across the entire execution environment, including network access, tool permissions, and filesystem boundaries.
 
-### Control is the underlying value proposition
+#### Control is the underlying value proposition
 
 While I might not fully shrug my distaste for some of the aspects of enterprise AI, I cannot deny that it has incredible power and utility. What I find compelling about local inference is operational control. Choosing my models, controlling their acquisition/execution, constraining system access, these are the features I appreciate the most.
 
 I don't (and doubt that I can) necessarily eliminate every external dependency; I just want to better understand, control, and trust the tools I'm utilizing. Local models are impervious to malfeasance - but they offer a degree of autonomy over the infrastructure and data involved in using AI that hosted services inherently abstract away.
 
-### Postscript - Strata
+#### Postscript - Strata
 
 My initial testing and benchmarking actually began in Strata, rather than LM Studio. I wanted to explore the viability of larger MoE models across VRAM and system memory on relatively modest consumer hardware. The results were remarkable: Qwen3.6-35B-A3B Q6_K_XL managed approximately 50 t/s on my setup.
 
