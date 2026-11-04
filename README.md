@@ -95,5 +95,15 @@ Biggest takeaway: MTP drastically improved performance in exchange for the modes
 
 Additional notes: LM Studio defaults for models were not a good fit, notably hampering performance. Following the official sampling recommendations drastically improved outcomes.
 
+## Takeaways
+
+- Smaller local models can be surprisingly capable when given well-scoped engineering tasks.
+- Reasoning effort should be proportional to task complexity.
+- Agent compatibility can matter more than raw model intelligence.
+- Inference optimizations can meaningfully change the practicality of local development.
+- Local AI is not automatically private AI; the surrounding infrastructure matters.
+
 ### Strata
 Testing and benchmarking of models actually began in Strata, not LM Studio. I wanted to see what all the fuss about larger MoE models on VRAM and CPU could do on my modest consumer-grade hardware. The results were remarkable, with Qwen3.6-35B-A3B Q6_K_XL running at a blistering 50 t/s. This came with caveats, most notably that the models really didn't interface well with Continue agentically, resulting in lots of churn and lost context (though one-shot capabilities were notable). Strata also has some privacy considerations, as it downloads new weights and models at runtime without without user prompting. This in the wake of the of the recent AI supply chain attacks was simply too large a concern to ignore. I ended up moving to LM Studio for consistency, though I hope Strata addresses these concerns and that LM Studio implements that style of MoE hardware resource allocation tricks soon.
+
+
