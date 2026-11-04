@@ -73,6 +73,11 @@ assets/               # Button template images + test composite
 requirements.txt      # Python dependencies
 ```
 
+## My Hardware
+
+CPU / RAM: 9800x3d, 32gb DDR5 memory
+GPU: AMD Radeon RX 9060 XT, 16gb VRAM
+
 ## Thesis
 
 I've always been a bit of a luddite when it comes to AI, partly because of concerns like environmental impact and privacy. I decided to get hands-on with a small project around local inference — a way to utilize it without running afoul of my objections. 
