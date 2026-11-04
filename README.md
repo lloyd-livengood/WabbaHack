@@ -91,19 +91,42 @@ Long story short: high reasoning found all of the major issues identified, but t
 
 At the end of it all I took the winning parameters and ran a full agentic refactor of the project with a final proofread and thumbs up from Claude.
 
-Biggest takeaway: MTP drastically improved performance in exchange for the modest 0.5 GB VRAM penalty. MTP off ran at about 20 t/s, while MTP on with 4 max draft tokens (over the default 3) raised this to approximately 30 t/s with regular bursts in the mid 30s.
-
-Additional notes: LM Studio defaults for models were not a good fit, notably hampering performance. Following the official sampling recommendations drastically improved outcomes.
-
-## Takeaways
-
-- Smaller local models can be surprisingly capable when given well-scoped engineering tasks.
-- Reasoning effort should be proportional to task complexity.
-- Agent compatibility can matter more than raw model intelligence.
-- Inference optimizations can meaningfully change the practicality of local development.
-- Local AI is not automatically private AI; the surrounding infrastructure matters.
-
-### Strata
-Testing and benchmarking of models actually began in Strata, not LM Studio. I wanted to see what all the fuss about larger MoE models on VRAM and CPU could do on my modest consumer-grade hardware. The results were remarkable, with Qwen3.6-35B-A3B Q6_K_XL running at a blistering 50 t/s. This came with caveats, most notably that the models really didn't interface well with Continue agentically, resulting in lots of churn and lost context (though one-shot capabilities were notable). Strata also has some privacy considerations, as it downloads new weights and models at runtime without without user prompting. This in the wake of the of the recent AI supply chain attacks was simply too large a concern to ignore. I ended up moving to LM Studio for consistency, though I hope Strata addresses these concerns and that LM Studio implements that style of MoE hardware resource allocation tricks soon.
+Technical takeaways: 
+- MTP drastically improved performance in exchange for the modest 0.5 GB VRAM penalty. MTP off ran at about 20 t/s, while MTP on with 4 max draft tokens (over the default 3) raised this to approximately 30 t/s with regular bursts in the mid-30s.
+- LM Studio defaults for models were not a good fit, notably hampering performance. Following the official sampling recommendations drastically improved outcomes.
 
 
+## Why Local AI?
+
+Privacy is one of the primary motivations behind my interest in local inference, although I think the argument deserves a little more nuance than simply keeping prompts off someone else's servers. Local inference is an important component of data privacy, but it isn't a sufficient security guarantee; the model is only one part of a larger execution environment, and evaluating an AI workflow requires looking beyond where inference happens.
+
+There are three areas worth considering.
+
+**Inference locality**
+
+With hosted models, prompts, source code, retrieved context, and tool outputs are transmitted to infrastructure operated by an external provider. We will suffice to say that my trust in those providers is somewhat *limited*.
+
+Local inference changes that trust boundary. Computation happens on hardware I control, preventing sensitive context from leaving my environment. This is particularly relevant for coding agents, for obvious reasons.
+
+Of course, this assumes the inference path is genuinely local. Cloud fallbacks, telemetry, and auxiliary services can easily undermine that assumption (see Postscript - Strata).
+
+**Model provenance**
+
+Runtime model acquisition introduces another layer of trust. Where are the weights coming from? Can their integrity be verified? Am I running the exact artifact I intended to download? I'd rather know *exactly* what I'm running and where it came from than treat model acquisition as an inconsequential implementation detail.
+
+**Agent architecture**
+
+This is arguably the most overlooked consideration.
+
+A coding agent isn't simply an LLM with a chat interface. It's another layer that can mediate access to the filesystem, shell, browser, environment variables, external APIs, and other tools. A locally hosted model can still operate within an agent framework that transmits telemetry, delegates embeddings to remote services, or communicates with external providers. Local inference does not guarantee a local workflow. Privacy and security need to be evaluated across the entire execution environment, including network access, tool permissions, and filesystem boundaries.
+
+**Control is the underlying value proposition**
+
+While I might not fully shrug my distaste for some of the aspects of enterprise AI, I cannot deny that it has incredible power and utility.
+
+What I find compelling about local inference is operational control. Choosing my models, controlling their acquisition/execution, constraining system access, these are the features I appreciate the most.
+
+I don't (and doubt that I can) necessarily eliminate every external dependency; I just want to better understand, control, and trust the tools I'm utilizing. Local models are impervious to malfeasance - but they offer a degree of autonomy over the infrastructure and data involved in using AI that hosted services inherently abstract away.
+
+### Postscript - Strata ###
+Testing and benchmarking of models actually began in Strata, not LM Studio. I wanted to see what all the fuss about larger MoE models on VRAM and CPU could do on my modest consumer-grade hardware. The results were remarkable, with Qwen3.6-35B-A3B Q6_K_XL running at a blistering 50 t/s. This came with caveats, most notably that the models really didn't interface well with Continue agentically, resulting in lots of churn and lost context (though one-shot capabilities were notable). Strata also has some privacy considerations, as it downloads new weights and models at runtime without user prompting. This in the wake of the recent AI supply chain attacks was simply too large a concern to ignore. I ended up moving to LM Studio for consistency, though I hope Strata addresses these concerns and that LM Studio implements that style of MoE hardware resource allocation tricks soon.
